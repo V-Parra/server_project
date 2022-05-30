@@ -11,22 +11,26 @@ const io = require('socket.io')(http);
 const body = require('body-parser');
 
 server.use('/bootstrap/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
-server.use('/bootstrap/js', express.static(path.join(__dirname, '/node_modules/bootstrap/disc/js')));
+server.use('/bootstrap/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
 server.use('/jquery', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
 server.use(express.static('public'));
+server.use(body.urlencoded({
+    extended: true
+}))
+server.use(body.json());
 
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/templates/index.html'));
 });
 
-server.post('/', (req, res) => {
-    var usernamedata = req.body.username;
+server.post('/test', (req, res) => {
+    var usernamedata = req.body;
 
-    var sql = `INSERT INTO user (username) VALUES ("${usernamedata})`;
+    var sql = `INSERT INTO user (username) VALUES ("${usernamedata.name_field}")`;
     db.query(sql, function(err, res) {
         if (err) throw err;
         console.log('Success');
-        req.flash('success', 'Data added succesfully');
+        //req.flush('success', 'Data added succesfully');
     });
 });
 
