@@ -6,7 +6,7 @@ const http = require('http').createServer(server);
 const port = 8080;
 const path = require('path');
 const { append } = require('express/lib/response');
-const { db } = require('./database');
+const { db, selectQuery, createAccount } = require('./database');
 const io = require('socket.io')(http);
 const body = require('body-parser');
 
@@ -25,16 +25,15 @@ server.get('/', (req, res) => {
 
 server.post('/test', (req, res) => {
     var usernamedata = req.body;
-
-    var sql = `INSERT INTO user (username) VALUES ("${usernamedata.name_field}")`;
-    db.query(sql, function(err, res) {
-        if (err) throw err;
-        console.log('Success');
-        //req.flush('success', 'Data added succesfully');
-    });
+    createAccount(usernamedata.name_field);
 });
 
 http.listen(port, () => {
     console.log(`Listening on http://localhost:${port}`);
 });
 
+
+
+io.on('connection', (socket) => {
+    console.log(`[connection] ${socket.id}`);
+});
