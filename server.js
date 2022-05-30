@@ -8,6 +8,7 @@ const path = require('path');
 const { append } = require('express/lib/response');
 const { db } = require('./database');
 const io = require('socket.io')(http);
+const body = require('body-parser');
 
 server.use('/bootstrap/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
 server.use('/bootstrap/js', express.static(path.join(__dirname, '/node_modules/bootstrap/disc/js')));
@@ -19,9 +20,9 @@ server.get('/', (req, res) => {
 });
 
 server.post('/', (req, res) => {
-    var username = req.body.username;
+    var usernamedata = req.body.username;
 
-    var sql = `INSERT INTO user (username) VALUES ("${username})`;
+    var sql = `INSERT INTO user (username) VALUES ("${usernamedata})`;
     db.query(sql, function(err, res) {
         if (err) throw err;
         console.log('Success');
