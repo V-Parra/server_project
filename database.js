@@ -16,7 +16,6 @@ function createAccount(data) {
     var sql = `INSERT INTO user (username) VALUES ("${data}")`;
     db.query(sql, function (err, res) {
         if (err) throw err;
-        console.log('Account Created');
     })
 }
 
