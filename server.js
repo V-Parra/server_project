@@ -34,11 +34,11 @@ server.get('/', (req, res) => {
 //     res.sendFile(path.join(__dirname, '/templates/games/morpion.html'));
 // })
 
-server.post('/', (req, res) => {
-    var usernamedata = req.body;
-    createAccount(usernamedata.name_field);
-    console.log(usernamedata.name_field);
-});
+// server.post('/', (req, res) => {
+//     // var usernamedata = req.body;
+//     // createAccount(usernamedata.name_field);
+//     // console.log(usernamedata.name_field);
+// });
 
 http.listen(port, () => {
     console.log(`Listening on http://localhost:${port}/`);
@@ -47,8 +47,8 @@ http.listen(port, () => {
 io.on('connection', function(socket) {
     socket.on('inQueue', (player) => {
         createAccount(player.username);
-        var sqlReq = `UPDATE user SET inQueue = ("${player.inQueue}") WHERE username = ("${player.username}")`;
-        db.query(sqlReq, function(err, res) {
+        var sqlReq = `UPDATE user SET inQueue = ? WHERE username = ?`;
+        db.query(sqlReq, [player.inQueue, player.username], function(err, res) {
             if (err) throw err;
         });
         console.log(`${player.username} est entré dans la file`);
