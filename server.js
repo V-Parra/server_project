@@ -1,3 +1,4 @@
+
 const { Socket } = require('socket.io');
 const express = require('express');
 const { createPopper } = require('@popperjs/core');
@@ -5,7 +6,6 @@ const server = express();
 const http = require('http').createServer(server);
 const port = 8080;
 const path = require('path');
-const { append } = require('express/lib/response');
 const { db, selectQuery, createAccount } = require('./database');
 
 /**
@@ -29,17 +29,30 @@ server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/templates/index.html'));
 });
 
-server.post('/test', (req, res) => {
+
+// server.get('/games/morpion', (req, res) => {
+//     res.sendFile(path.join(__dirname, '/templates/games/morpion.html'));
+// })
+
+server.post('/', (req, res) => {
     var usernamedata = req.body;
     createAccount(usernamedata.name_field);
+    console.log(usernamedata.name_field);
 });
 
 http.listen(port, () => {
-    console.log(`Listening on http://localhost:${port}`);
+    console.log(`Listening on http://localhost:${port}/`);
 });
 
 io.on('connection', function(socket) {
-    io.on('inQueue', function (text) {
-        console.log(text + ' est rentré dans la queue');
-    });
+    socket.on('inQueue', (player) => {
+        createAccount(player.username);
+        var inQueue = true;
+        var sqlReq = `UPDATE user SET inQueue = ("${inQueue}")`;
+        db.query(sqlReq, function(err, res) {
+            if (err) throw err;
+        });
+        console.log(`${player.username} est entré dans la file`);
+    })
+    
 });

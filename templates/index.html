@@ -7,23 +7,23 @@
     <title>Morpion</title>
 </head>
 <body>
-    <script src="/socket.io/socket.io.js"></script>
+    <!-- <script src="/socket.io/socket.io.js"></script>
     <script>
         const socket = io();
         var send = function () {
             const username = document.getElementById('username').value;
             socket.emit('inQueue', username);
         }
-    </script>
+    </script> -->
     <!-- <div class="container mt-5">
         <div class="row">
             <div class="col-sm-12 col-md-6 offset-md-3">
                 <div class="alert d-none">
                     <div class="card mb-3" id="user-card"> -->
-                        <form action="/test" method="post">
+                        <form method="POST" id="form" action="/">
                             <label for="username">username</label>
                             <input type="text" id="username" name="name_field">
-                            <button type="submit" value="validé" onclick="send()">Entré dans la queue</button>
+                            <button type="submit">Entré dans la queue</button>
                         </form>
                     <!-- </div>
                 </div>
