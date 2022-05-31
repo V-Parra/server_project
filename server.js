@@ -47,8 +47,7 @@ http.listen(port, () => {
 io.on('connection', function(socket) {
     socket.on('inQueue', (player) => {
         createAccount(player.username);
-        var inQueue = true;
-        var sqlReq = `UPDATE user SET inQueue = ("${inQueue}")`;
+        var sqlReq = `UPDATE user SET inQueue = ("${player.inQueue}") WHERE username = ("${player.username}")`;
         db.query(sqlReq, function(err, res) {
             if (err) throw err;
         });
