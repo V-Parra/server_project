@@ -7,7 +7,7 @@ const player = {
 const socket = io();
 
 const usernameInput = document.getElementById('username');
-const waintingArea = document.getElementById('wainting-area');
+const waintingArea = document.getElementById('waiting-area');
 
 $("#form").on('submit', function(e) {
     e.preventDefault();
@@ -16,6 +16,6 @@ $("#form").on('submit', function(e) {
     player.socketId = socket.id;
     console.log(player);
     
-    //waintingArea.classList.remove('d-none');
+    waintingArea.classList.remove('d-none');
     socket.emit('inQueue', player);
 });

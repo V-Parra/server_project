@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/bootstrap/css/bootstrap.min.css">
     <title>Morpion</title>
 </head>
+
 <body>
     <!-- <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -15,24 +17,36 @@
             socket.emit('inQueue', username);
         }
     </script> -->
-    <!-- <div class="container mt-5">
+    <div class="container mt-5">
         <div class="row">
             <div class="col-sm-12 col-md-6 offset-md-3">
-                <div class="alert d-none">
-                    <div class="card mb-3" id="user-card"> -->
+                    <div class="card mb-3" id="user-card">
+                        <div class="card-body">
                         <form method="POST" id="form" action="/">
                             <label for="username">username</label>
                             <input type="text" id="username" name="name_field">
                             <button type="submit">Entré dans la queue</button>
                         </form>
-                    <!-- </div>
+                    </div>
+                    </div>
+                    <div class="d-none" id="waiting-area">
+                        <div class="card mb-3">
+                            <div class="card-header">En attente d'un autre joueur</div>
+                            <div class="card-body mx-auto">
+                                <div class="spinner-border" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div> -->
+    </div>
     <script src="/jquery/jquery.min.js"></script>
     <script src="/bootstrap/js/bootstrap.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/client.js"></script>
 </body>
+
 </html>

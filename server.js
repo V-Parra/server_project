@@ -15,8 +15,8 @@ const { db, selectQuery, createAccount } = require('./database');
 const io = require('socket.io')(http);
 const body = require('body-parser');
 
-server.use('/bootstrap/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
-server.use('/bootstrap/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
+server.use('/bootstrap/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
+server.use('/bootstrap/js/', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
 server.use('/socket.io', express.static(path.join(__dirname, '/node_modules/socket.io/dist')));
 server.use('/jquery', express.static(path.join(__dirname, '/node_modules/jquery/dist')));
 server.use(express.static('src'));
