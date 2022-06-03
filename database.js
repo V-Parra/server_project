@@ -19,11 +19,11 @@ function createAccount(data) {
     })
 }
 
-function querySelectByForm(data) {
-    var sql = `SELECT * FROM user WHERE username = ("${data}")`;
+function checkPlayerInQueue (data) {
+    var sql = `SELECT username FROM user WHERE inQueue = ("${data}")`;
     db.query(sql, function (err, res) {
         if (err) throw err;
-        console.log(res);
+        return res;
     });
 }
-module.exports = { db, querySelectByForm, createAccount }
+module.exports = { db, checkPlayerInQueue , createAccount }

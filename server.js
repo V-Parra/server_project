@@ -6,7 +6,7 @@ const server = express();
 const http = require('http').createServer(server);
 const port = 8080;
 const path = require('path');
-const { db, selectQuery, createAccount } = require('./database');
+const { db, checkPlayerInQueue, createAccount } = require('./database');
 
 /**
  * @type {Socket}
@@ -14,6 +14,7 @@ const { db, selectQuery, createAccount } = require('./database');
 
 const io = require('socket.io')(http);
 const body = require('body-parser');
+const { threadId } = require('worker_threads');
 
 server.use('/bootstrap/css', express.static(path.join(__dirname, 'node_modules/bootstrap/dist/css')));
 server.use('/bootstrap/js/', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
@@ -44,14 +45,25 @@ http.listen(port, () => {
     console.log(`Listening on http://localhost:${port}/`);
 });
 
+
 io.on('connection', function(socket) {
     socket.on('inQueue', (player) => {
         createAccount(player.username);
         var sqlReq = `UPDATE user SET inQueue = ? WHERE username = ?`;
+        var sqlReqDate = `UPDATE user SET enterAt = ? WHERE username = ?`;
+        var sqlReqSocketID = `UPDATE user SET enterAt = ? WHERE username = ?`;
         db.query(sqlReq, [player.inQueue, player.username], function(err, res) {
             if (err) throw err;
         });
+        db.query(sqlReqDate, [player.enterAt, player.username], function(err, res) {
+            if (err) throw err;
+        });
+        db.query(sqlReqSocketID, [player.socketId, player.username], function(err, res) {
+            if (err) throw err;
+        })
         console.log(`${player.username} est entré dans la file`);
+        console.log(player.enterAt);
+        console.log(player.socketId);
     })
     
 });
