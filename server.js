@@ -6,7 +6,7 @@ const server = express();
 const http = require('http').createServer(server);
 const port = 8080;
 const path = require('path');
-const { db, checkPlayerInQueue, createAccount, playerInQueueArray } = require('./database');
+const { db, createAccount } = require('./database');
 
 /**
  * @type {Socket}
@@ -48,9 +48,10 @@ http.listen(port, () => {
 
 const games = {
     gamesID: "",
-    playerId1: "",
-    playerId2: "",
+    playerId1: [],
 };
+
+var playerInQueueArray;
 
 io.on('connection', function (socket) {
     socket.on('inQueue', (player) => {
@@ -72,13 +73,15 @@ io.on('connection', function (socket) {
         db.query(sql, function (err, res) {
             if (err) throw err;
             Object.keys(res).forEach(function (key) {
-                var playerInQueueArray = res[key];
-                games.playerId1 = playerInQueueArray['username'];
-                games.playerId2 = playerInQueueArray['username'];
+                playerInQueueArray = res[key];
+                games.playerId1.push(playerInQueueArray['username']);
+                // games.playerId2 = playerInQueueArray['username'];
                 console.log(games.playerId1);
+                console.log(playerInQueueArray['socketID']);
                 // console.log(games.playerId2);
-                //socket.to(playerInQueueArray['socketID']).emit('foundGame', games);
+                // console.log(games.playerId2);
+                socket.to(playerInQueueArray['socketID']).emit('foundGame', games);
             });
         });
-    })
+    });
 });
