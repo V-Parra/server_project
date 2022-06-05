@@ -45,10 +45,12 @@ http.listen(port, () => {
     console.log(`Listening on http://localhost:${port}/`);
 });
 
-function foundPlayer() {
 
+const games = {
+    gamesID: "",
+    playerId1: "",
+    playerId2: "",
 };
-
 
 io.on('connection', function (socket) {
     socket.on('inQueue', (player) => {
@@ -66,12 +68,16 @@ io.on('connection', function (socket) {
             if (err) throw err;
         })
         console.log(`${player.username} est entré dans la file`);
-        var sql = `SELECT username, socketID, enterAt FROM user WHERE inQueue = ("1")`;
+        var sql = `SELECT username, socketID FROM user WHERE inQueue = ("1") ORDER BY enterAt LIMIT 2`;
         db.query(sql, function (err, res) {
             if (err) throw err;
             Object.keys(res).forEach(function (key) {
                 var playerInQueueArray = res[key];
-                console.log(typeof(playerInQueueArray));
+                games.playerId1 = playerInQueueArray['username'];
+                games.playerId2 = playerInQueueArray['username'];
+                console.log(games.playerId1);
+                // console.log(games.playerId2);
+                //socket.to(playerInQueueArray['socketID']).emit('foundGame', games);
             });
         });
     })
