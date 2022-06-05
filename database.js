@@ -6,6 +6,7 @@ var db = mydb.createConnection({
     database: "mydb"
 });
 
+
 db.connect(function (err) {
     if (err) throw err;
     console.log('Connectec to mydb');
@@ -19,11 +20,4 @@ function createAccount(data) {
     })
 }
 
-function checkPlayerInQueue (data) {
-    var sql = `SELECT username FROM user WHERE inQueue = ("${data}")`;
-    db.query(sql, function (err, res) {
-        if (err) throw err;
-        return res;
-    });
-}
-module.exports = { db, checkPlayerInQueue , createAccount }
+module.exports = { db , createAccount }

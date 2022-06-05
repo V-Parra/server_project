@@ -6,7 +6,7 @@ const server = express();
 const http = require('http').createServer(server);
 const port = 8080;
 const path = require('path');
-const { db, checkPlayerInQueue, createAccount } = require('./database');
+const { db, checkPlayerInQueue, createAccount, playerInQueueArray } = require('./database');
 
 /**
  * @type {Socket}
@@ -45,25 +45,34 @@ http.listen(port, () => {
     console.log(`Listening on http://localhost:${port}/`);
 });
 
+function foundPlayer() {
 
-io.on('connection', function(socket) {
+};
+
+
+io.on('connection', function (socket) {
     socket.on('inQueue', (player) => {
         createAccount(player.username);
         var sqlReq = `UPDATE user SET inQueue = ? WHERE username = ?`;
         var sqlReqDate = `UPDATE user SET enterAt = ? WHERE username = ?`;
-        var sqlReqSocketID = `UPDATE user SET enterAt = ? WHERE username = ?`;
-        db.query(sqlReq, [player.inQueue, player.username], function(err, res) {
+        var sqlReqSocketID = `UPDATE user SET socketID = ? WHERE username = ?`;
+        db.query(sqlReq, [player.inQueue, player.username], function (err, res) {
             if (err) throw err;
         });
-        db.query(sqlReqDate, [player.enterAt, player.username], function(err, res) {
+        db.query(sqlReqDate, [player.enterAt, player.username], function (err, res) {
             if (err) throw err;
         });
-        db.query(sqlReqSocketID, [player.socketId, player.username], function(err, res) {
+        db.query(sqlReqSocketID, [player.socketId, player.username], function (err, res) {
             if (err) throw err;
         })
         console.log(`${player.username} est entré dans la file`);
-        console.log(player.enterAt);
-        console.log(player.socketId);
+        var sql = `SELECT username, socketID, enterAt FROM user WHERE inQueue = ("1")`;
+        db.query(sql, function (err, res) {
+            if (err) throw err;
+            Object.keys(res).forEach(function (key) {
+                var playerInQueueArray = res[key];
+                console.log(typeof(playerInQueueArray));
+            });
+        });
     })
-    
 });
