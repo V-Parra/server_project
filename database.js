@@ -13,6 +13,13 @@ db.connect(function (err) {
 })
 
 
+function gameCreated(data) {
+    var sql = `INSERT INTO games (idGame) VALUE ("${data}")`;
+    db.query(sql, function (err, res) {
+        if (err) throw err;
+    })
+}
+
 function createAccount(data) {
     var sql = `INSERT INTO user (username) VALUES ("${data}")`;
     db.query(sql, function (err, res) {
@@ -20,4 +27,4 @@ function createAccount(data) {
     })
 }
 
-module.exports = { db , createAccount }
+module.exports = { db , createAccount, gameCreated }

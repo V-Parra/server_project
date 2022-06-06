@@ -6,7 +6,7 @@ const server = express();
 const http = require('http').createServer(server);
 const port = 8080;
 const path = require('path');
-const { db, createAccount } = require('./database');
+const { db, createAccount, gameCreated } = require('./database');
 
 /**
  * @type {Socket}
@@ -50,11 +50,13 @@ const games = {
     gamesID: "",
     playerId1: [],
     socketIdPlayer: [],
+    playerUsername: [],
 };
 
-var playerInQueueArray;
+var playerInQueueArray = [];
 
-io.on('connection', function (socket) {
+io.on('connection', (socket) => {
+
     socket.on('inQueue', (player) => {
         createAccount(player.username);
         var sqlReq = `UPDATE user SET inQueue = ? WHERE username = ?`;
@@ -70,30 +72,40 @@ io.on('connection', function (socket) {
             if (err) throw err;
         })
         console.log(`${player.username} est entré dans la file`);
-        games.playerId1 = [];
+        games.playerId1.push(player);
         games.socketIdPlayer = [];
+        games.playerUsername = [];
         var sql = `SELECT username, socketID FROM user WHERE inQueue = ("1") ORDER BY enterAt LIMIT 2`;
         db.query(sql, function (err, res) {
             if (err) throw err;
             Object.keys(res).forEach(function (key) {
                 playerInQueueArray = res[key];
-                games.playerId1.push(playerInQueueArray['username']);
+                // console.log(playerInQueueArray);
+                // games.playerId1.push(playerInQueueArray['username']);
+                games.playerUsername.push(playerInQueueArray['username']);
                 games.socketIdPlayer.push(playerInQueueArray['socketID']);
                 // console.log(games.playerId1);
                 // console.log(games.socketIdPlayer);
-                console.log(playerInQueueArray['socketID']);
-                console.log(games.socketIdPlayer);
+                // console.log(playerInQueueArray['username']);
                 // console.log(playerInQueueArray['socketID']);
-                for( var i = 0; i <= games.socketIdPlayer.length; i++ ){
-                    socket.to(games.socketIdPlayer[0]).emit('foundGame', games);
-                    socket.to(games.socketIdPlayer[1]).emit('foundGame', games);
-                };
+                // 
             });
+            //Boucle pour envoyer les sockets aux deux joueurs
+            for( var i = 0; i <= games.socketIdPlayer.length; i++ ){
+                socket.to(games.socketIdPlayer[0]).emit('foundGame', games);
+                socket.to(games.socketIdPlayer[1]).emit('foundGame', games);
+            };
         });
-        // socketCount += 1;
-    });
-    // if (socketCount === 2) {
         
-    //     socketCount = 0;
+        // io.to(playerInQueueArray['socketID']).emit('foundGame', games); 
+    });
+
+
+    // Pour plus tard, à voir
+    // games.gamesID = generategameId();
+    // gameCreated(games.gamesID);
+
+    // function generategameId() {
+    //     return Math.random().toString(36).substring(2, 9);
     // }
 });
