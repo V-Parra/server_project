@@ -49,6 +49,7 @@ http.listen(port, () => {
 const games = {
     gamesID: "",
     playerId1: [],
+    socketIdPlayer: [],
 };
 
 var playerInQueueArray;
@@ -70,16 +71,29 @@ io.on('connection', function (socket) {
         })
         console.log(`${player.username} est entré dans la file`);
         games.playerId1 = [];
+        games.socketIdPlayer = [];
         var sql = `SELECT username, socketID FROM user WHERE inQueue = ("1") ORDER BY enterAt LIMIT 2`;
         db.query(sql, function (err, res) {
             if (err) throw err;
             Object.keys(res).forEach(function (key) {
                 playerInQueueArray = res[key];
                 games.playerId1.push(playerInQueueArray['username']);
-                console.log(games.playerId1);
+                games.socketIdPlayer.push(playerInQueueArray['socketID']);
+                // console.log(games.playerId1);
+                // console.log(games.socketIdPlayer);
                 console.log(playerInQueueArray['socketID']);
-                socket.to(playerInQueueArray['socketID']).emit('foundGame', games);
+                console.log(games.socketIdPlayer);
+                // console.log(playerInQueueArray['socketID']);
+                for( var i = 0; i <= games.socketIdPlayer.length; i++ ){
+                    socket.to(games.socketIdPlayer[0]).emit('foundGame', games);
+                    socket.to(games.socketIdPlayer[1]).emit('foundGame', games);
+                };
             });
         });
+        // socketCount += 1;
     });
+    // if (socketCount === 2) {
+        
+    //     socketCount = 0;
+    // }
 });
