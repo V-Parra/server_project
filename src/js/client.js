@@ -19,12 +19,13 @@ $("#form").on('submit', function(e) {
     waintingArea.classList.remove('d-none');
     socket.emit('inQueue', player);
     console.log(player);
-    socket.on('foundGame', (games) => {
-        if (games.playerId1[0] != player.username)
-        console.log(`Vous jouez contre ${games.playerId1[0]}`);
-        else 
-        console.log(`Vous jouez contre ${games.playerId1[1]}`);
-    });
+});
+
+socket.on('foundGame', (games) => {
+    if (games.playerId1[0] != player.username)
+    console.log(`Vous jouez contre ${games.playerId1[0]}`);
+    if (games.playerId1[1] != player.username) 
+    console.log(`Vous jouez contre ${games.playerId1[1]}`);
 });
 
 

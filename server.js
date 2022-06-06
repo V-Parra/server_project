@@ -69,17 +69,15 @@ io.on('connection', function (socket) {
             if (err) throw err;
         })
         console.log(`${player.username} est entré dans la file`);
+        games.playerId1 = [];
         var sql = `SELECT username, socketID FROM user WHERE inQueue = ("1") ORDER BY enterAt LIMIT 2`;
         db.query(sql, function (err, res) {
             if (err) throw err;
             Object.keys(res).forEach(function (key) {
                 playerInQueueArray = res[key];
                 games.playerId1.push(playerInQueueArray['username']);
-                // games.playerId2 = playerInQueueArray['username'];
                 console.log(games.playerId1);
                 console.log(playerInQueueArray['socketID']);
-                // console.log(games.playerId2);
-                // console.log(games.playerId2);
                 socket.to(playerInQueueArray['socketID']).emit('foundGame', games);
             });
         });
