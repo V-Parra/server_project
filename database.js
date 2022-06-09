@@ -20,9 +20,10 @@ function gameCreated(data) {
     })
 }
 
-function createAccount(data) {
-    var sql = `INSERT INTO user (username) VALUES ("${data}")`;
-    db.query(sql, function (err, res) {
+
+function createAccount(dataUsername, dataSocketID, dataInGame, dataEnterAt) {
+    var sqlUsername = `INSERT INTO user (username, inGame, socketID, enterAt) VALUES ("${dataUsername}", "${dataInGame}", "${dataSocketID}", "${dataEnterAt}")`;
+    db.query(sqlUsername, function (err, res) {
         if (err) throw err;
     })
 }

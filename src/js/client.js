@@ -1,6 +1,6 @@
 const player = {
     username: "",
-    inQueue: false,
+    inGame: false,
     socketId: "",
     symbole: 'X',
     enterAt: new Date(),
@@ -21,10 +21,9 @@ let ennemyUsername = ""
 $("#form").on('submit', function(e) {
     e.preventDefault();
     player.username = usernameInput.value;
-    player.inQueue = true;
     player.socketId = socket.id;
     waintingArea.classList.remove('d-none');
-    socket.emit('inQueue', player);
+    socket.emit('goInQueue', player);
     console.log(player);
 });
 
