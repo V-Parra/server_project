@@ -1,12 +1,11 @@
 
 const { Socket } = require('socket.io');
 const express = require('express');
-const { createPopper } = require('@popperjs/core');
 const server = express();
 const http = require('http').createServer(server);
 const port = 8080;
 const path = require('path');
-const { db, createAccount, gameCreated } = require('./database');
+const { db, createAccount } = require('./database');
 
 /**
  * @type {Socket}
@@ -53,39 +52,32 @@ http.listen(port, () => {
 });
 
 function checkPLayerIsSchearching() {
-    let counter = 0;
-    if (counter <= 1) {
-        callback();
-        return;
-    }
     sql = `SELECT user.username, user.socketId FROM user WHERE user.inGame = 0 LIMIT 2`
     let game = new Game;
-    try {
-        let players = [];
-        let reader = db.query(sql, function (err, res) {
-            if (err) throw err;
-            // var resData = JSON.parse(JSON.stringify(res));
-            // console.log(resData);
-            // console.log(resData[0].username);
-            let player = new Player(res[0].socketId, res[0].username);
-            while (res) {
+    let players = [];
+    db.query(sql, function (err, res) {
+        if (err) throw err;
+        while (res) {
+            if (res.length == 1) {
+                console.log("vous avez recu qu'une requête")
+                break;
+            } else if (res.length == 2) {
+                console.log("vous avez recu deux requête")
+                let player = new Player(res[0].socketId, res[0].username);
                 let player2 = new Player(res[1].socketId, res[1].username);
+                console.log(player)
+                console.log(player2)
                 players.push(player);
                 players.push(player2);
-                // console.log(players);
-                // console.log(player);
-                // const playerSelect = {res, }
                 if (players.length > 1) {
                     game = CreateGame(players);
-                } else {
-                    break;
                 }
-            } 
-        });
-    } catch (error) {
-        
-    } 
-};
+            }
+        }
+    });
+}
+// var resData = JSON.parse(JSON.stringify(res));
+
 
 function CreateGame(players) {
     let game = new Game(generategameId(), players[0], players[1]);
