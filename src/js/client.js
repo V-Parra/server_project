@@ -8,6 +8,7 @@ const player = {
     turn: false,
     playedCell: "",
     win: false,
+    ennemyPlayer: "",
 };
 
 const socket = io();
@@ -168,6 +169,11 @@ function calculateWin(playedCell, symbol = player.symbole) {
 
 function startGame(games) {
 
+    if (player.username != games.player1.username) {
+        player.ennemyPlayer = games.player1.username;
+    } else if (player.username != games.player2.username) {
+        player.ennemyPlayer = games.player2.username;
+    }
     let ennemyPlayer = "";
     player.inGame = true;
     player.idGame = games.idGame;
@@ -189,8 +195,7 @@ function startGame(games) {
     };
     
     ennemyUsername = ennemyPlayer;
-    console.log(ennemyUsername);
-
+    
     if(player.turn) {
     SetTurnMessage('alert-info', 'alert-success', "C'est ton tour de jouer");
     } else {
