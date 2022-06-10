@@ -53,45 +53,39 @@ http.listen(port, () => {
 });
 
 function checkPLayerIsSchearching() {
-    let counter = 0;
-    if (counter <= 1) {
-        callback();
-        return;
-    }
+    
     sql = `SELECT user.username, user.socketId FROM user WHERE user.inGame = 0 LIMIT 2`
     let game = new Game;
-    try {
         let players = [];
-        let reader = db.query(sql, function (err, res) {
+        db.query(sql, function (err, res) {
             if (err) throw err;
             // var resData = JSON.parse(JSON.stringify(res));
             // console.log(resData);
             // console.log(resData[0].username);
+            if (res.length == 2){
             let player = new Player(res[0].socketId, res[0].username);
-            while (res) {
-                let player2 = new Player(res[1].socketId, res[1].username);
-                players.push(player);
-                players.push(player2);
-                // console.log(players);
-                // console.log(player);
-                // const playerSelect = {res, }
-                if (players.length > 1) {
-                    game = CreateGame(players);
-                } else {
-                    break;
-                }
-            } 
+            let player2 = new Player(res[1].socketId, res[1].username);
+            players.push(player);
+            players.push(player2);
+            // console.log(players);
+            // console.log(player);
+            // const playerSelect = {res, }
+            if (players.length > 1) {
+                game = CreateGame(players);
+            }
+        }
         });
-    } catch (error) {
-        
-    } 
 };
 
 function CreateGame(players) {
     let game = new Game(generategameId(), players[0], players[1]);
     reqStatutGame = `UPDATE user SET inGame = 1 WHERE socketId = ?`;
     reqCreateGame = `INSERT INTO game (id, player1, player2) VALUES ("${game.idGame}", "${game.player1.id}", "${game.player2.id}")`;
-    db.query(reqStatutGame, [players[0].id, players[1].id], function (err, res) {
+    console.log(game);
+    db.query(reqStatutGame, players[0].id, function (err, res) {
+        if (err) throw err;
+    });
+    db.query(reqStatutGame, players[1].id, function (err, res) {
         if (err) throw err;
     });
     db.query(reqCreateGame, function (err, res) {
