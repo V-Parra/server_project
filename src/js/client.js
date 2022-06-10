@@ -27,14 +27,14 @@ $("#form").on('submit', function(e) {
     console.log(player);
 });
 
-socket.on('foundGame', (games) => {
-    if (games.playerUsername[0] != player.username){
-    console.log(`Vous jouez contre ${games.playerUsername[0]}`);
-    }else if (games.playerUsername[1] != player.username){
-    console.log(`Vous jouez contre ${games.playerUsername[1]}`);
+socket.on('matchFound', (game) => {
+    if (game.player1.id != player.socketId){
+    console.log(`Vous jouez contre ${game.player1.username}`);
+    }else if (game.player2.id != player.socketId){
+    console.log(`Vous jouez contre ${game.player2.username}`);
     }
     // gameCard.classList.remove('d-none');
-    startGame(games);
+    // startGame(game);
 });
 
 function startGame(games) {
