@@ -106,19 +106,14 @@ function generategameId() {
     return Math.random().toString(36).substring(2, 9);
 };
 
-// function foundMatch() {
-//     let game = new Game();
-//     game = checkPLayerIsSchearching();
-//     console.log(game);
-//     if (game != null) {
-//         CreateMatch(game);
-//     }
-// }
-
-
 io.on('connection', (socket) => {
     socket.on('goInQueue', (player) => {
         createAccount(player.username, player.socketId, player.inGame, player.enterAt);
         checkPLayerIsSchearching();
     })
+
+    socket.on('play', (player) => {
+        io.to(player.idGame).emit('play', player);
+        console.log(player.idGame); 
+    });
 });
