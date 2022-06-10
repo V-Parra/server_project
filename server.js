@@ -52,29 +52,22 @@ http.listen(port, () => {
 });
 
 function checkPLayerIsSchearching() {
-    sql = `SELECT user.username, user.socketId FROM user WHERE user.inGame = 0 LIMIT 2`
     let game = new Game;
     let players = [];
+    sql = `SELECT user.username, user.socketId FROM user WHERE user.inGame = 0 LIMIT 2`
     db.query(sql, function (err, res) {
         if (err) throw err;
-        while (res) {
-            if (res.length == 1) {
-                console.log("vous avez recu qu'une requête")
-                break;
-            } else if (res.length == 2) {
-                console.log("vous avez recu deux requête")
-                let player = new Player(res[0].socketId, res[0].username);
-                let player2 = new Player(res[1].socketId, res[1].username);
-                console.log(player)
-                console.log(player2)
-                players.push(player);
-                players.push(player2);
-                if (players.length > 1) {
-                    game = CreateGame(players);
-                }
-            }
+        let player = new Player(res[0].socketId, res[0].username);
+        let player2 = new Player(res[1].socketId, res[1].username);
+        console.log(player)
+        console.log(player2)
+        players.push(player);
+        players.push(player2);
+        if (players.length > 1) {
+            game = CreateGame(players);
+
         }
-    });
+    })
 }
 // var resData = JSON.parse(JSON.stringify(res));
 
