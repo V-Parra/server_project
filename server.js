@@ -106,9 +106,8 @@ io.on('connection', (socket) => {
     })
 
     socket.on('play', (player) => {
-        io.to(player.idGame).emit('player', player);
-        // console.log(player);
-        // console.log(typeof(player.idGame)); 
+        console.log(player.idGame);
+        io.to(player.idGame).emit('play', player);
     });
 
     socket.on('chat message', function (msg) {

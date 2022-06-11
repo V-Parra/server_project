@@ -41,9 +41,9 @@ socket.on('matchFound', (game) => {
     startGame(game);
 });
 
-socket.on('player', (player) => {
-    console.log(player.idGame);
-}); 
+// socket.on('player', (player) => {
+//     console.log(player.idGame);
+// }); 
 
 $(".cell").on('click', function (e) {
     const playedCell = this.getAttribute('id');
