@@ -73,10 +73,11 @@ socket.on( 'play', (playerEnnemy) => {
         };
 
         if (equalityGame()) {
-            updateTurnMessage('alert-info', 'alert-warning', "C'est une égalité");
+            SetTurnMessage('alert-info', 'alert-warning', "C'est une égalité");
             return;
         };
-        updateTurnMessage('alert-info', 'alert-success', "C'est ton tour de jouer");
+        SetTurnMessage('alert-info', 'alert-success', "C'est ton tour de jouer");
+        player.turn = true;
     } else {
         if (player.win) {
             $("#turn-message").addClass('alert-success').html("Félicitation, vous avez gagné !");
@@ -84,17 +85,17 @@ socket.on( 'play', (playerEnnemy) => {
         };
 
         if (equalityGame()) {
-            updateTurnMessage('alert-info', 'alert-warning', "C'est une égalité");
+            SetTurnMessage('alert-info', 'alert-warning', "C'est une égalité");
             return;
         }; 
-        updateTurnMessage('alert-info', 'alert-success', `C'est au tour de <b>${ennemyUsername}</b> de jouer`);
+        SetTurnMessage('alert-info', 'alert-success', `C'est au tour de <b>${ennemyUsername}</b> de jouer`);
         player.turn = false;
     };
 });
 
 function equalityGame() {
     let equality = true;
-    const cells = document.getElementById('cell');
+    const cells = document.getElementsByClassName('cell');
 
     for(const cell of cells) {
         if (cell.textContent === '') {
@@ -182,7 +183,11 @@ function startGame(games) {
     }
     let ennemyPlayer = "";
     player.inGame = true;
-    player.idGame = games.idGame;
+    if (player.socketId != games.player1.id ) {
+        player.ennemyPlayer = games.player1.id
+    } else if (player.socketId != games.player2.id) {
+        player.ennemyPlayer = games.player2.id
+    }
     
 
     gameCard.classList.remove('d-none');
@@ -217,4 +222,18 @@ function SetTurnMessage(classToRemove, classToAdd, html){
     turnMsg.classList.add(classToAdd);
     turnMsg.innerHTML = html;
 };
+
+function recieve(msg) {
+    var li = document.createElement('li');
+    li.innerText = msg;
+    document.getElementById('messages').appendChild(li);
+}
+
+$(".buttonSend").on('click', function() {
+    var text = document.getElementById('m').value;
+    socket.emit('chat message', text, player);
+    console.log(`${player.username} : ${text}`);
+})
+
+socket.on('chat message', recieve);
 

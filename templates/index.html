@@ -48,22 +48,6 @@
 
     <div class="card d-none" id="chat-card">
         <title>Socket.IO chat</title>
-        <script src="/socket.io/socket.io.js"></script>
-        <script> 
-        var socketmsg = io();
-        var send = function () {
-            var text = document.getElementById('m').value;
-            socketmsg.emit('chat message', text);
-            console.log(text)
-        }
-
-        var recieve = function(msg) {
-            var li = document.createElement('li');
-            li.innerText = msg;
-            document.getElementById('messages').appendChild(li);
-        }
-        socketmsg.on('chat message', recieve);
-        </script>
     <div class="card d-none" id="game-card">
         <div class="card-header">
             Morpion
@@ -91,7 +75,7 @@
         <div id="chat">
             <ul id="messages"></ul>
             <div class="zone_saisie"></div>
-                <input id="m" /> <button onclick="send()">Send</button>
+                <input id="m" /> <button class="buttonSend">Send</button>
         </div>
         <div class="text-center d-none mt-2" id="restart-area">
             <input class="btn btn-primary" id="restart" type="button" value="Rejouer">

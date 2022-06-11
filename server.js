@@ -107,11 +107,13 @@ io.on('connection', (socket) => {
 
     socket.on('play', (player) => {
         console.log(player.idGame);
-        io.to(player.idGame).emit('play', player);
+        io.to(player.socketId).emit('play', player);
+        io.to(player.ennemyPlayer).emit('play', player);
     });
 
-    socket.on('chat message', function (msg) {
-        console.log('message recu ' + msg);
-        io.emit('chat message', msg);
+    socket.on('chat message', function (msg, player) {
+        console.log(`Message reçu de ${player.username} ` + msg);
+        io.to(player.socketId).emit('chat message', msg, player);
+        io.to(player.ennemyPlayer).emit('chat message', msg, player);
     })
 });
