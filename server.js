@@ -45,13 +45,6 @@ class Game {
     }
 }
 
-class IA {
-    constructor(id, username) {
-        this.id = id;
-        this.usename = username;
-    }
-}
-
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/templates/index.html'));
 });
@@ -113,7 +106,13 @@ io.on('connection', (socket) => {
     })
 
     socket.on('play', (player) => {
-        io.to(player.idGame).emit('play', player);
-        console.log(player.idGame); 
+        io.to(player.idGame).emit('player', player);
+        // console.log(player);
+        // console.log(typeof(player.idGame)); 
     });
+
+    socket.on('chat message', function (msg) {
+        console.log('message recu ' + msg);
+        io.emit('chat message', msg);
+    })
 });

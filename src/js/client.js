@@ -12,12 +12,14 @@ const player = {
 };
 
 const socket = io();
+const chat = document.getElementById("chat-card");
 const gameCard = document.getElementById('game-card');
 const userCard = document.getElementById('user-card');
 const usernameInput = document.getElementById('username');
 const waintingArea = document.getElementById('waiting-area');
 const turnMsg = document.getElementById('turn-message');
 var date_now = Date.now();
+
 
 let ennemyUsername = ""
 
@@ -39,6 +41,10 @@ socket.on('matchFound', (game) => {
     startGame(game);
 });
 
+socket.on('player', (player) => {
+    console.log(player.idGame);
+}); 
+
 $(".cell").on('click', function (e) {
     const playedCell = this.getAttribute('id');
 
@@ -52,7 +58,7 @@ $(".cell").on('click', function (e) {
     };
 });
 
-socket.on('play', (playerEnnemy) => {
+socket.on( 'play', (playerEnnemy) => {
     console.log(playerEnnemy.idGame);
     console.log(playerEnnemy.playedCell);
     if (playerEnnemy.socketId !== player.socketId && !playerEnnemy.turn) {
@@ -183,6 +189,7 @@ function startGame(games) {
     waintingArea.classList.add('d-none');
     userCard.classList.add('d-none');
     turnMsg.classList.remove('d-none');
+    chat.classList.remove('d-none');
 
     if (player.socketId != games.player1.id) {
         ennemyPlayer = games.player1.username;
