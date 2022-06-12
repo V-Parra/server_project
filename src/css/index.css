@@ -1,21 +1,50 @@
 .cell {
-    border: 1px solid;
-    font-size: 5rem;
-    height: 150px;
-    text-align: center;
-    width: 150px;
+  border: 1px solid;
+  font-size: 5rem;
+  height: 150px;
+  text-align: center;
+  width: 150px;
 }
 .board {
-    background-color: aliceblue;
+  background-color: aliceblue;
 }
-.cell:hover{
-    cursor: pointer;
-    background-color: rgb(192, 191, 191);
+.cell:hover {
+  cursor: pointer;
+  background-color: rgb(192, 191, 191);
 }
 .cell:active {
-    background-color: rgb(155, 154, 154);
+  background-color: rgb(155, 154, 154);
 }
 
 .win-cell {
-    background-color: greenyellow !important;
+  background-color: greenyellow !important;
+}
+li {
+  list-style-type: none;
+}
+#chat {
+  position: absolute;
+  right: 70px;
+  bottom: 40px;
+  width: 300px;
+    margin-right: auto;
+    margin-top: 10px;
+    background-color: white;
+    box-shadow: #254C58 1px 0px;
+    border: #3C7D91 5px double; 
+    padding: 10px 10px 10px 10px;
+    overflow-y: scroll;
+    max-height: 300px;
+}
+#test {
+    position: sticky;
+    bottom: 0px;
+}
+#messages {
+    position: sticky;
+    bottom: 80px;
+    
+}
+ul#messages {
+    padding-left: 0.5rem;
 }
