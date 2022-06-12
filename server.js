@@ -45,6 +45,17 @@ class Game {
     }
 }
 
+const playerIA = {
+    username: "",
+    inGame: false, 
+    idGame: "",
+    socketId: "",
+    turn: false,
+    playedCell: "",
+    symbole: 'X',
+    win: false,
+}
+
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/templates/index.html'));
 });
@@ -80,7 +91,7 @@ function checkPLayerIsSchearching() {
 };
 
 function CreateGame(players) {
-    let game = new Game(generategameId(), players[0], players[1]);
+    let game = new Game(generateId(), players[0], players[1]);
     reqStatutGame = `UPDATE user SET inGame = 1 WHERE socketId = ?`;
     reqCreateGame = `INSERT INTO game (id, player1, player2) VALUES ("${game.idGame}", "${game.player1.id}", "${game.player2.id}")`;
     db.query(reqStatutGame, players[0].id, function (err, res) {
@@ -95,7 +106,7 @@ function CreateGame(players) {
     return game;
 };
 
-function generategameId() {
+function generateId() {
     return Math.random().toString(36).substring(2, 9);
 };
 
@@ -103,6 +114,11 @@ io.on('connection', (socket) => {
     socket.on('goInQueue', (player) => {
         createAccount(player.username, player.socketId, player.inGame, player.enterAt);
         checkPLayerIsSchearching();
+    });
+
+    socket.on('startGameAlone', (player) => {
+        createAccount(player.username, player.socketId, player.inGame, player.enterAt);
+        
     })
 
     socket.on('play', (player) => {

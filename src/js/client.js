@@ -223,9 +223,9 @@ function SetTurnMessage(classToRemove, classToAdd, html){
     turnMsg.innerHTML = html;
 };
 
-function recieve(msg) {
+function recieve(msg, player) {
     var li = document.createElement('li');
-    li.innerText = msg;
+    li.innerText = `${player.username} : ` + msg;
     document.getElementById('messages').appendChild(li);
 }
 
@@ -235,5 +235,7 @@ $(".buttonSend").on('click', function() {
     console.log(`${player.username} : ${text}`);
 })
 
-socket.on('chat message', recieve);
+socket.on('chat message', (msg, player) => {
+    recieve(msg, player);
+});
 
