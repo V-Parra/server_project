@@ -217,6 +217,30 @@ function startGame(games) {
     
 };
 
+function restartGame(games = null ) {
+    const cells = document.getElementById('cell');
+    for (const cell of cells) {
+        cell.innerHTML = '';
+        cell.classList.remove('win-cell', 'text-danger');
+    }
+
+    turnMsg.classList.remove('alert-warning', 'alert-danger');
+
+    if (player.username == games.player1.username) {
+        player.turn = true;
+    };
+
+    if (player.username != games.player1.username) {
+        player.turn = false;
+    }
+
+    player.win = false;
+
+    if(games) {
+        startGame(games);
+    }
+}
+
 function SetTurnMessage(classToRemove, classToAdd, html){
     turnMsg.classList.remove(classToRemove);
     turnMsg.classList.add(classToAdd);

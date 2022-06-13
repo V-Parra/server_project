@@ -45,16 +45,7 @@ class Game {
     }
 }
 
-const playerIA = {
-    username: "",
-    inGame: false, 
-    idGame: "",
-    socketId: "",
-    turn: false,
-    playedCell: "",
-    symbole: 'X',
-    win: false,
-}
+
 
 server.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '/templates/index.html'));
@@ -106,6 +97,15 @@ function CreateGame(players) {
     return game;
 };
 
+function GameAlone() {
+
+}
+
+function CreateGameAlone(players) {
+    let game = new Game(generateId(), players[0], players[1]);
+    req
+}
+
 function generateId() {
     return Math.random().toString(36).substring(2, 9);
 };
@@ -126,6 +126,10 @@ io.on('connection', (socket) => {
         io.to(player.socketId).emit('play', player);
         io.to(player.ennemyPlayer).emit('play', player);
     });
+
+    socket.on('restart', (games) => {
+
+    })
 
     socket.on('chat message', function (msg, player) {
         console.log(`Message reçu de ${player.username} ` + msg);
