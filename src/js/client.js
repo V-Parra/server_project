@@ -67,7 +67,7 @@ socket.on( 'play', (playerEnnemy) => {
         playedCell.innerHTML = 'O';
 
         if (playerEnnemy.win) {
-            SetTurnMessage('alert-info', 'alert-danger', `C'est perdu ! <b>${playerEnnemy.username} à gagné`);
+            SetTurnMessage('alert-info', 'alert-danger', `C'est perdu ! <b>${playerEnnemy.username}<b> à gagné`);
             calculateWin(playerEnnemy.playedCell, 'O');
             return;
         };

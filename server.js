@@ -127,8 +127,8 @@ io.on('connection', (socket) => {
         io.to(player.ennemyPlayer).emit('play', player);
     });
 
-    socket.on('restart', (games) => {
-
+    socket.on('restart', (player) => {
+        
     })
 
     socket.on('chat message', function (msg, player) {
