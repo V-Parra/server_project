@@ -9,9 +9,19 @@ const player = {
     playedCell: "",
     win: false,
     ennemyPlayer: "",
+    playedAlone: false,
 };
 
+const bot = {
+    username: "",
+    symbole: 'O',
+    turn: false,
+    playedCell: "",
+    win: false,
+}
+
 const socket = io();
+const inputCard = document.getElementById("input-card")
 const chat = document.getElementById("chat-card");
 const gameCard = document.getElementById('game-card');
 const userCard = document.getElementById('user-card');
@@ -23,42 +33,66 @@ var date_now = Date.now();
 
 let ennemyUsername = ""
 
-$("#form").on('submit', function(e) {
+$("#form").on('submit', function (e) {
     e.preventDefault();
     player.username = usernameInput.value;
     player.socketId = socket.id;
     waintingArea.classList.remove('d-none');
+    inputCard.classList.add('d-none');
     socket.emit('goInQueue', player);
     console.log(player);
 });
 
+$("#game-alone").on('submit', function (e) {
+    e.preventDefault();
+    player.username = usernameInput.value;
+    bot.username = Math.random().toString(36).substring(2, 9);
+    player.playedAlone = true;
+    console.log(player);
+    console.log(bot);
+    console.log(player.playedAlone);
+    StartGameAgainstBot();
+
+})
+
 socket.on('matchFound', (game) => {
-    if (game.player1.id != player.socketId){
-    console.log(`Vous jouez contre ${game.player1.username}`);
-    } else if (game.player2.id != player.socketId){
-    console.log(`Vous jouez contre ${game.player2.username}`);
+    if (game.player1.id != player.socketId) {
+        console.log(`Vous jouez contre ${game.player1.username}`);
+    } else if (game.player2.id != player.socketId) {
+        console.log(`Vous jouez contre ${game.player2.username}`);
     }
     startGame(game);
 });
 
-// socket.on('player', (player) => {
-//     console.log(player.idGame);
-// }); 
 
 $(".cell").on('click', function (e) {
     const playedCell = this.getAttribute('id');
 
-    if (this.innerText === "" && player.turn ) {
-        player.playedCell = playedCell;
-        this.innerText = player.symbole;
-        player.win = calculateWin(playedCell);
-        player.turn = false;
+    if (player.playedAlone == true) {
+        if (this.innerText === "" && player.turn) {
+            player.playedCell = playedCell;
+            this.innerText = player.symbole;
+            player.win = calculateWin(playedCell);
+            player.turn = false;
+            bot.turn = true;
+            if (bot.turn == true) {
+                //faire la fonction pour que le bot joue
+                bot.turn = false;
+            };
+        }
+    } else {
+        if (this.innerText === "" && player.turn) {
+            player.playedCell = playedCell;
+            this.innerText = player.symbole;
+            player.win = calculateWin(playedCell);
+            player.turn = false;
 
-        socket.emit('play', player);
+            socket.emit('play', player);
+        };
     };
 });
 
-socket.on( 'play', (playerEnnemy) => {
+socket.on('play', (playerEnnemy) => {
     console.log(playerEnnemy.idGame);
     console.log(playerEnnemy.playedCell);
     if (playerEnnemy.socketId !== player.socketId && !playerEnnemy.turn) {
@@ -87,7 +121,7 @@ socket.on( 'play', (playerEnnemy) => {
         if (equalityGame()) {
             SetTurnMessage('alert-info', 'alert-warning', "C'est une égalité");
             return;
-        }; 
+        };
         SetTurnMessage('alert-info', 'alert-success', `C'est au tour de <b>${ennemyUsername}</b> de jouer`);
         player.turn = false;
     };
@@ -97,7 +131,7 @@ function equalityGame() {
     let equality = true;
     const cells = document.getElementsByClassName('cell');
 
-    for(const cell of cells) {
+    for (const cell of cells) {
         if (cell.textContent === '') {
             equality = false;
         };
@@ -174,6 +208,24 @@ function calculateWin(playedCell, symbol = player.symbole) {
     }
 }
 
+function moveBot() {
+    const cells = document.getElementsByClassName('cell');
+    for (const cell of cells) {
+        if(cell.textContent === '') {
+            
+        }
+    }
+
+}
+
+function StartGameAgainstBot() {
+    gameCard.classList.remove('d-none');
+    chat.classList.remove('d-none');
+    userCard.classList.add('d-none');
+    turnMsg.classList.remove('d-none');
+    player.turn = true;
+}
+
 function startGame(games) {
 
     if (player.username != games.player1.username) {
@@ -183,12 +235,12 @@ function startGame(games) {
     }
     let ennemyPlayer = "";
     player.inGame = true;
-    if (player.socketId != games.player1.id ) {
+    if (player.socketId != games.player1.id) {
         player.ennemyPlayer = games.player1.id
     } else if (player.socketId != games.player2.id) {
         player.ennemyPlayer = games.player2.id
     }
-    
+
 
     gameCard.classList.remove('d-none');
     waintingArea.classList.add('d-none');
@@ -205,43 +257,17 @@ function startGame(games) {
     if (player.username == games.player1.username) {
         player.turn = true;
     };
-    
+
     ennemyUsername = ennemyPlayer;
-    
-    if(player.turn) {
-    SetTurnMessage('alert-info', 'alert-success', "C'est ton tour de jouer");
+
+    if (player.turn) {
+        SetTurnMessage('alert-info', 'alert-success', "C'est ton tour de jouer");
     } else {
         SetTurnMessage('alert-success', 'alert-info', "C'est au tour de l'adversaire");
     };
-
-    
 };
 
-function restartGame(games = null ) {
-    const cells = document.getElementById('cell');
-    for (const cell of cells) {
-        cell.innerHTML = '';
-        cell.classList.remove('win-cell', 'text-danger');
-    }
-
-    turnMsg.classList.remove('alert-warning', 'alert-danger');
-
-    if (player.username == games.player1.username) {
-        player.turn = true;
-    };
-
-    if (player.username != games.player1.username) {
-        player.turn = false;
-    }
-
-    player.win = false;
-
-    if(games) {
-        startGame(games);
-    }
-}
-
-function SetTurnMessage(classToRemove, classToAdd, html){
+function SetTurnMessage(classToRemove, classToAdd, html) {
     turnMsg.classList.remove(classToRemove);
     turnMsg.classList.add(classToAdd);
     turnMsg.innerHTML = html;
@@ -253,7 +279,7 @@ function recieve(msg, player) {
     document.getElementById('messages').appendChild(li);
 }
 
-$(".buttonSend").on('click', function() {
+$(".buttonSend").on('click', function () {
     var text = document.getElementById('m').value;
     socket.emit('chat message', text, player);
     console.log(`${player.username} : ${text}`);

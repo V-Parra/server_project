@@ -22,13 +22,18 @@
         <div class="row">
             <div class="col-sm-12 col-md-6 offset-md-3">
                 <div class="alert d-none" role="alert" id="turn-message"></div>
-                <div class="card mb-3" id="user-card">
+                <div class="card mb-3" id="user-card" >
                     <div class="card-body">
-                        <form method="POST" id="form" action="/">
-                            <label for="username">username</label>
-                            <input type="text" id="username" name="name_field">
-                            <button type="submit">Entré dans la queue</button>
-                        </form>
+                        <label for="username"><b>Username :</b></label>
+                        <input type="text" id="username" name="name_field">
+                        <div class="" style="display: flex; margin: 1rem;" id="input-card">
+                            <form method="POST" id="form" action="/" style="margin: 10px;">
+                                <button type="submit">Entré dans la queue</button>
+                            </form>
+                            <form method="POST" id="game-alone" action="/" style="margin: 10px;">
+                                <button type="submit">Jouer tout seul</button>
+                            </form>
+                        </div>
                     </div>
                 </div>
                 <div class="d-none" id="waiting-area">
@@ -47,50 +52,49 @@
     </div>
 
     <div class="card d-none" id="chat-card">
-        <title>Socket.IO chat</title>
-    <div class="card d-none" id="game-card">
-        <div class="card-header">
-            Morpion
-        </div>
-    
-        <div class="card-body mx-auto">
-            <table class="board">
-                <tr>
-                    <td class="cell" id="cell-1-1"></td>
-                    <td class="cell" id="cell-1-2"></td>
-                    <td class="cell" id="cell-1-3"></td>
-                </tr>
-                <tr>
-                    <td class="cell" id="cell-2-1"></td>
-                    <td class="cell" id="cell-2-2"></td>
-                    <td class="cell" id="cell-2-3"></td>
-                </tr>
-                <tr>
-                    <td class="cell" id="cell-3-1"></td>
-                    <td class="cell" id="cell-3-2"></td>
-                    <td class="cell" id="cell-3-3"></td>
-                </tr>
-                <script>
-                </script>
-                <div id="chat">
-                    <ul id="messages"></ul>
-                    <div class="zone_saisie" id="test">
-                        <input id="m" /> <button class="buttonSend">Send</button>
+        <div class="card d-none" id="game-card">
+            <div class="card-header">
+                Morpion
+            </div>
+
+            <div class="card-body mx-auto">
+                <table class="board">
+                    <tr>
+                        <td class="cell" id="cell-1-1"></td>
+                        <td class="cell" id="cell-1-2"></td>
+                        <td class="cell" id="cell-1-3"></td>
+                    </tr>
+                    <tr>
+                        <td class="cell" id="cell-2-1"></td>
+                        <td class="cell" id="cell-2-2"></td>
+                        <td class="cell" id="cell-2-3"></td>
+                    </tr>
+                    <tr>
+                        <td class="cell" id="cell-3-1"></td>
+                        <td class="cell" id="cell-3-2"></td>
+                        <td class="cell" id="cell-3-3"></td>
+                    </tr>
+                    <script>
+                    </script>
+                    <div id="chat">
+                        <ul id="messages"></ul>
+                        <div class="zone_saisie" id="test">
+                            <input id="m" /> <button class="buttonSend">Send</button>
+                        </div>
                     </div>
-                </div>
-            </table>
-        </div>
-        <div class="text-center d-none mt-2" id="restart-area">
-            <input class="btn btn-primary" id="restart" type="button" value="Rejouer">
-        </div>
+                </table>
+            </div>
+            <div class="text-center d-none mt-2" id="restart-area">
+                <input class="btn btn-primary" id="restart" type="button" value="Rejouer">
+            </div>
 
 
 
-    <!-- toujours mettre a la fin -->
-    <script src="/jquery/jquery.min.js"></script>
-    <script src="/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/client.js"></script>
+            <!-- toujours mettre a la fin -->
+            <script src="/jquery/jquery.min.js"></script>
+            <script src="/bootstrap/js/bootstrap.min.js"></script>
+            <script src="/socket.io/socket.io.js"></script>
+            <script src="/js/client.js"></script>
 </body>
 
 </html>

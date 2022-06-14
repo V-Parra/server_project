@@ -97,15 +97,6 @@ function CreateGame(players) {
     return game;
 };
 
-function GameAlone() {
-
-}
-
-function CreateGameAlone(players) {
-    let game = new Game(generateId(), players[0], players[1]);
-    req
-}
-
 function generateId() {
     return Math.random().toString(36).substring(2, 9);
 };
