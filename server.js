@@ -118,10 +118,6 @@ io.on('connection', (socket) => {
         io.to(player.ennemyPlayer).emit('play', player);
     });
 
-    socket.on('restart', (player) => {
-        
-    })
-
     socket.on('chat message', function (msg, player) {
         console.log(`Message reçu de ${player.username} ` + msg);
         io.to(player.socketId).emit('chat message', msg, player);

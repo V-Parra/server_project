@@ -13,7 +13,7 @@ const player = {
 };
 
 const bot = {
-    username: "",
+    username: "bot",
     symbole: 'O',
     turn: false,
     playedCell: "",
@@ -46,11 +46,7 @@ $("#form").on('submit', function (e) {
 $("#game-alone").on('submit', function (e) {
     e.preventDefault();
     player.username = usernameInput.value;
-    bot.username = Math.random().toString(36).substring(2, 9);
     player.playedAlone = true;
-    console.log(player);
-    console.log(bot);
-    console.log(player.playedAlone);
     StartGameAgainstBot();
 
 })
@@ -64,37 +60,62 @@ socket.on('matchFound', (game) => {
     startGame(game);
 });
 
+function randomMove() {
+    return Math.floor(Math.random() * 9);
+}
 
 $(".cell").on('click', function (e) {
-    const playedCell = this.getAttribute('id');
-
-    if (player.playedAlone == true) {
-        if (this.innerText === "" && player.turn) {
-            player.playedCell = playedCell;
-            this.innerText = player.symbole;
-            player.win = calculateWin(playedCell);
-            player.turn = false;
-            bot.turn = true;
-            if (bot.turn == true) {
-                //faire la fonction pour que le bot joue
-                bot.turn = false;
+        const playedCell = this.getAttribute('id');
+    
+        if (player.playedAlone == true) {
+            if (this.innerText === "" && player.turn) {
+                player.playedCell = playedCell;
+                this.innerText = player.symbole;
+                player.turn = false;
+                bot.turn = true;
+                player.win = calculateWin();                
+                if (bot.turn == true) {
+                    for (let i = 1; i < 10; i++) {
+                        const cell = document.getElementById(`${i}`);
+                        if (cell.innerText === 'X' || cell.innerText === 'O') {
+                            continue;
+                        } else {
+                            if (cell.innerText === "") {
+                                console.log('le bot a jouer')
+                                bot.playedCell = randomMove();
+                                cell.innerText = bot.symbole;
+                                bot.turn = false;
+                                player.turn = true;
+                                bot.win = calculateWin();
+                                break;
+                            };
+                        };
+                    }
+                };
             };
-        }
-    } else {
-        if (this.innerText === "" && player.turn) {
-            player.playedCell = playedCell;
-            this.innerText = player.symbole;
-            player.win = calculateWin(playedCell);
-            player.turn = false;
-
-            socket.emit('play', player);
+            if (player.win) {
+                SetTurnMessage('alert-info', 'alert-success', `Vous avez gagné`);
+            } else if (bot.win) {
+                SetTurnMessage('alert-info', 'alert-danger', `C'est perdu ! <b>${bot.username}<b> à gagné`);
+                var li = document.createElement('li');
+            li.innerText = `${bot.username} : ` + "Je t'ai baisé " + `${player.username}`;
+            document.getElementById('messages').appendChild(li);
+            };
+            if (equalityGame()) {
+                SetTurnMessage('alert-info', 'alert-warning', "C'est une égalité");
+            }
+        } else {
+            if (this.innerText === "" && player.turn) {
+                player.playedCell = playedCell;
+                this.innerText = player.symbole;
+                player.win = calculateWin();
+                player.turn = false;
+                socket.emit('play', player);
+            };
         };
-    };
-});
+    });
 
 socket.on('play', (playerEnnemy) => {
-    console.log(playerEnnemy.idGame);
-    console.log(playerEnnemy.playedCell);
     if (playerEnnemy.socketId !== player.socketId && !playerEnnemy.turn) {
         const playedCell = document.getElementById(`${playerEnnemy.playedCell}`);
         playedCell.classList.add('text-danger');
@@ -102,7 +123,7 @@ socket.on('play', (playerEnnemy) => {
 
         if (playerEnnemy.win) {
             SetTurnMessage('alert-info', 'alert-danger', `C'est perdu ! <b>${playerEnnemy.username}<b> à gagné`);
-            calculateWin(playerEnnemy.playedCell, 'O');
+            calculateWin();
             return;
         };
 
@@ -114,7 +135,7 @@ socket.on('play', (playerEnnemy) => {
         player.turn = true;
     } else {
         if (player.win) {
-            $("#turn-message").addClass('alert-success').html("Félicitation, vous avez gagné !");
+            $("#turn-message").add('alert-success').html("Félicitation, vous avez gagné !");
             return;
         };
 
@@ -139,83 +160,86 @@ function equalityGame() {
     return equality;
 };
 
-function calculateWin(playedCell, symbol = player.symbole) {
-    let row = playedCell[5];
-    let column = playedCell[7];
+function calculateWin() {
 
-    let win = true;
+    let win = false;
+    const cell1 = document.getElementById('1');
+    const cell2 = document.getElementById('2');
+    const cell3 = document.getElementById('3');
+    const cell4 = document.getElementById('4');
+    const cell5 = document.getElementById('5');
+    const cell6 = document.getElementById('6');
+    const cell7 = document.getElementById('7');
+    const cell8 = document.getElementById('8');
+    const cell9 = document.getElementById('9');
 
-    for (let i = 1; i < 4; i++) {
-        if ($(`#cell-${i}-${column}`).text() !== symbol) {
-            win = false;
-        }
+    if (cell1.innerText === "X" && cell2.innerText === "X" && cell3.innerText === "X" || cell1.innerText === 'O' && cell2.innerText === 'O' && cell3.innerText === 'O') {
+        cell1.classList.add("win-cell");
+        cell2.classList.add("win-cell");
+        cell3.classList.add("win-cell");
+        player.turn = false;
+        bot.turn = false;
+        win = true
+    }
+    if (cell4.innerText === "X" && cell5.innerText === "X" && cell6.innerText === "X" || cell4.innerText === 'O' && cell5.innerText === 'O' && cell6.innerText === 'O') {
+        win = true
+        player.turn = false;
+        bot.turn = false;
+        cell4.classList.add("win-cell");
+        cell5.classList.add("win-cell");
+        cell6.classList.add("win-cell");
+    }
+    if (cell7.innerText === "X" && cell8.innerText === "X" && cell9.innerText === "X" || cell7.innerText === 'O' && cell8.innerText === 'O' && cell9.innerText === 'O') {
+        win = true
+        player.turn = false;
+        bot.turn = false;
+        cell7.classList.add("win-cell");
+        cell8.classList.add("win-cell");
+        cell9.classList.add("win-cell");
+    }
+    if (cell1.innerText === "X" && cell4.innerText === "X" && cell7.innerText === "X" || cell1.innerText === 'O' && cell4.innerText === 'O' && cell7.innerText === 'O') {
+        win = true
+        player.turn = false;
+        bot.turn = false;
+        cell1.classList.add("win-cell");
+        cell4.classList.add("win-cell");
+        cell7.classList.add("win-cell");
+    }
+    if (cell2.innerText === "X" && cell5.innerText === "X" && cell8.innerText === "X" || cell2.innerText === 'O' && cell5.innerText === 'O' && cell8.innerText === 'O') {
+        win = true
+        player.turn = false;
+        bot.turn = false;
+        cell2.classList.add("win-cell");
+        cell5.classList.add("win-cell");
+        cell8.classList.add("win-cell");
+    }
+    if (cell3.innerText === "X" && cell6.innerText === "X" && cell9.innerText === "X" || cell3.innerText === 'O' && cell6.innerText === 'O' && cell9.innerText === 'O') {
+        win = true
+        player.turn = false;
+        bot.turn = false;
+        cell3.classList.add("win-cell");
+        cell6.classList.add("win-cell");
+        cell9.classList.add("win-cell");
+    }
+    if (cell1.innerText === "X" && cell5.innerText === "X" && cell9.innerText === "X" || cell1.innerText === 'O' && cell5.innerText === 'O' && cell9.innerText === 'O') {
+        win = true
+        player.turn = false;
+        bot.turn = false;
+        cell1.classList.add("win-cell");
+        cell5.classList.add("win-cell");
+        cell9.classList.add("win-cell");
+    }
+    if (cell3.innerText === "X" && cell5.innerText === "X" && cell7.innerText === "X" || cell3.innerText === 'O' && cell5.innerText === 'O' && cell7.innerText === 'O') {
+        win = true
+        player.turn = false;
+        bot.turn = false;
+        cell3.classList.add("win-cell");
+        cell5.classList.add("win-cell");
+        cell7.classList.add("win-cell");
     }
 
-    if (win) {
-        for (let i = 1; i < 4; i++) {
-            $(`#cell-${i}-${column}`).addClass("win-cell");
-        }
-
-        return win;
-    }
-
-    win = true;
-    for (let i = 1; i < 4; i++) {
-        if ($(`#cell-${row}-${i}`).text() !== symbol) {
-            win = false;
-        }
-    }
-
-    if (win) {
-        for (let i = 1; i < 4; i++) {
-            $(`#cell-${row}-${i}`).addClass("win-cell");
-        }
-
-        return win;
-    }
-
-    win = true;
-
-    for (let i = 1; i < 4; i++) {
-        if ($(`#cell-${i}-${i}`).text() !== symbol) {
-            win = false;
-        }
-    }
-
-    if (win) {
-        for (let i = 1; i < 4; i++) {
-            $(`#cell-${i}-${i}`).addClass("win-cell");
-        }
-
-        return win;
-    }
-
-    // 3) SECONDARY DIAGONAL
-
-    win = false;
-    if ($("#cell-1-3").text() === symbol) {
-        if ($("#cell-2-2").text() === symbol) {
-            if ($("#cell-3-1").text() === symbol) {
-                win = true;
-
-                $("#cell-1-3").addClass("win-cell");
-                $("#cell-2-2").addClass("win-cell");
-                $("#cell-3-1").addClass("win-cell");
-
-                return win;
-            }
-        }
-    }
-}
-
-function moveBot() {
-    const cells = document.getElementsByClassName('cell');
-    for (const cell of cells) {
-        if(cell.textContent === '') {
-            
-        }
-    }
-
+    return win;
+    
 }
 
 function StartGameAgainstBot() {
@@ -224,6 +248,7 @@ function StartGameAgainstBot() {
     userCard.classList.add('d-none');
     turnMsg.classList.remove('d-none');
     player.turn = true;
+    player.ennemyPlayer = bot.username;
 }
 
 function startGame(games) {
